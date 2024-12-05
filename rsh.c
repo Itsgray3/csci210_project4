@@ -92,7 +92,7 @@ int main(int argc, char **argv) {
     // DONE:
     // create the message listener thread
 
-	pthread_create(pid, NULL, &messageListener, uName);
+	pthread_create(&pid, NULL, &messageListener, uName);
 
 
 
