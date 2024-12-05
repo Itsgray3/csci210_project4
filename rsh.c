@@ -145,7 +145,7 @@ int main(int argc, char **argv) {
 			printf("sendmsg: you have to enter a message\n");
 		}
 		strcpy(msg, token);
-		token = strtok(NULL, " ")
+		token = strtok(NULL, " ");
 		for ( ; 1; token = strtok(NULL, " ")) {
 			if (token == NULL) {
 				break;
