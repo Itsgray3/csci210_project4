@@ -55,6 +55,9 @@ void* messageListener(void *arg) {
 	user = open(arg, O_RDONLY);
 
 	while (1) {
+		if (read(user, &msg, sizeof(struct message)) != sizeof(struct message)) {
+			continue;
+		}
 		read(user, &msg, sizeof(struct message));
 		printf("Incoming message from %s: %s\n", msg.source, msg.msg);
 	}
