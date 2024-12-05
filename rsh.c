@@ -32,12 +32,12 @@ void sendmsg (char *user, char *target, char *msg) {
 	// by creating the message structure and writing it to server's FIFO
 
 	int server;
-	struct message msg;
-	strcpy(msg.source, user);
-	strcpy(msg.target, target);
-	strcpy(msg.msg, msg);
+	struct message message;
+	strcpy(message.source, user);
+	strcpy(message.target, target);
+	strcpy(message.msg, msg);
 	server = open("serverFIFO",O_WRONLY);
-	write(server, &msg, sizeof(struct message));
+	write(server, &message, sizeof(struct message));
 	close(server);
 }
 
@@ -59,7 +59,7 @@ void* messageListener(void *arg) {
 		printf("Incoming message from %s: %s\n", msg.source, msg.msg);
 	}
 	
-	close(arg);
+	close(user);
 	pthread_exit((void*)0);
 }
 
@@ -92,7 +92,7 @@ int main(int argc, char **argv) {
     // DONE:
     // create the message listener thread
 
-	pthred_create(pid, NULL, &messageListener, uName);
+	pthread_create(pid, NULL, &messageListener, uName);
 
 
 
