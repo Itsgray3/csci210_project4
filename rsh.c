@@ -27,21 +27,22 @@ void terminate(int sig) {
 }
 
 void sendmsg (char *user, char *target, char *msg) {
-	// TODO:
+	// DONE:
 	// Send a request to the server to send the message (msg) to the target user (target)
 	// by creating the message structure and writing it to server's FIFO
 
-
-
-
-
-
-
-
+	int server;
+	struct message msg;
+	strcpy(msg.source, user);
+	strcpy(msg.target, target);
+	strcpy(msg.msg, msg);
+	server = open("serverFIFO",O_WRONLY);
+	write(server, &msg, sizeof(struct message));
+	close(server);
 }
 
 void* messageListener(void *arg) {
-	// TODO:
+	// DONE:
 	// Read user's own FIFO in an infinite loop for incoming messages
 	// The logic is similar to a server listening to requests
 	// print the incoming message to the standard output in the
@@ -49,11 +50,16 @@ void* messageListener(void *arg) {
 	// Incoming message from [source]: [message]
 	// put an end of line at the end of the message
 
+	int user;
+	struct message msg;
+	user = open(arg, O_RDONLY);
 
-
-
-
-
+	while (1) {
+		read(user, &msg, sizeof(struct message));
+		printf("Incoming message from %s: %s\n", msg.source, msg.msg);
+	}
+	
+	close(arg);
 	pthread_exit((void*)0);
 }
 
@@ -83,8 +89,10 @@ int main(int argc, char **argv) {
 
     strcpy(uName,argv[1]);
 
-    // TODO:
+    // DONE:
     // create the message listener thread
+
+	pthred_create(pid, NULL, &messageListener, uName);
 
 
 
@@ -111,7 +119,7 @@ int main(int argc, char **argv) {
 	}
 
 	if (strcmp(cmd,"sendmsg")==0) {
-		// TODO: Create the target user and
+		// DONE: Create the target user and
 		// the message string and call the sendmsg function
 
 		// NOTE: The message itself can contain spaces
@@ -123,6 +131,31 @@ int main(int argc, char **argv) {
 		// printf("sendmsg: you have to specify target user\n");
 		// if no message is specified, you should print the followingA
  		// printf("sendmsg: you have to enter a message\n");
+
+		char* target;
+		char* msg;
+		char* token = strtok(NULL, " ");
+		if (token == NULL) {
+			printf("sendmsg: you have to specify target user\n");
+			continue;
+		}
+		strcpy(target, token);
+		token = strtok(NULL, " ");
+		if (token == NULL) {
+			printf("sendmsg: you have to enter a message\n");
+		}
+		strcpy(msg, token);
+		for ( ; 1; token = strtok(NULL, " ")) {
+			if (token == NULL) {
+				break;
+			}
+			else {
+				strcat(msg, " ");
+				strcat(msg, token);
+			}
+		}
+		sendmsg(uName, target, msg);
+
 
 
 
